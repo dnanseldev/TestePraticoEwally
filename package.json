@@ -1,0 +1,24 @@
+{
+  "name": "testepraticoewally",
+  "version": "1.0.0",
+  "description": "Teste pratico Ewally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnanseldev/TestePraticoEwally.git"
+  },
+  "author": "Daniel Anselmo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dnanseldev/TestePraticoEwally/issues"
+  },
+  "homepage": "https://github.com/dnanseldev/TestePraticoEwally#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12"
+  }
+}
