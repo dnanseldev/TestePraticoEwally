@@ -1,44 +1,49 @@
 const express = require('express')
 const routes = express.Router()
 
-let db = [
-    {'1': {name: 'Customer 01', age: 35}},
-    {'2': {name: 'Customer 02', age: 37}},
-    {'3': {name: 'Customer 03', age: 28}},
-]
-
-
 routes.get('/boleto/:digit_line', (request, response) => {
 
+    if ( !isNumeric(request.params.digit_line) )
+      // return response.status(400).end()
+      return response.json({Erro: 400, message: 'Valor numerico invalido'})
+
     let barcode = request.params.digit_line
-    let campo1 = barcode.slice(0, 3)
+    let fator_validade = barcode.slice(33, 37)    
+    let data_validade = new Date(1997, 10, 7) //Data base BACEN '07/10/1997'
+    data_validade.setDate(data_validade.getDate() + parseInt(fator_validade))
+    let valor_boleto = parseFloat( barcode.slice(37, 47) ) / 100
 
-    let fator_validade = barcode.slice(33, 37)
-    //let data_validade = Date.parse('07/10/1997') + parseInt(fator_validade)
+    const j_boleto = {
+        barCode: barcode.slice(0, 43),
+        amount: valor_boleto.toLocaleString('pt-br', {minimumFractionDigits: 2}),
+        expirationDate: data_validade.toLocaleString().substring(0,data_validade.toLocaleString().indexOf(' '))
+    }
     
-    let data_validade = new Date('07/10/1997') 
-    let data_fim =  data_validade.setDate(data_validade.getDate() + parseInt(fator_validade))    
-
-    let valor_boleto = barcode.slice(37, 47)
+    return response.json(j_boleto)
+   /*
     response.send(
         '<div>'+fator_validade+'</div>'+
-        '<div>'+data_fim.toLocaleString().substring(0,data_fim.toLocaleString().indexOf(' '))+'</div>'+
-        '<div>'+valor_boleto+'</div>'
+        '<div>'+data_validade.toLocaleString().substring(0,data_validade.toLocaleString().indexOf(' '))+'</div>'+
+        '<div>'+valor_boleto.toLocaleString('pt-br', {minimumFractionDigits: 2})+'</div>'
     )
+    */
     //return response.json(db)
 })
 
-routes.post('/add', (request, response) => {
-  
-     const body = request.body
+routes.get('/teste', (request, response) => {
 
-     if(!body)
-       return response.status(400).end()
-
-    db.push(body)
-
-    return response.json(db) 
+    const boleto = {
+        barCode: 'XXXXXXXXXX',
+        amount: '1200',
+        expirationDate: new Date('07/10/1997')
+    }
+    return response.json(boleto) 
 })
+
+//----------------------------------------------
+function isNumeric(num){
+    return !isNaN(num)
+  }
 
 
 module.exports = routes
