@@ -8,9 +8,24 @@ let db = [
 ]
 
 
-routes.get('/', (request, response) => {
+routes.get('/boleto/:digit_line', (request, response) => {
 
-    return response.json(db)
+    let barcode = request.params.digit_line
+    let campo1 = barcode.slice(0, 3)
+
+    let fator_validade = barcode.slice(33, 37)
+    //let data_validade = Date.parse('07/10/1997') + parseInt(fator_validade)
+    
+    let data_validade = new Date('07/10/1997') 
+    let data_fim =  data_validade.setDate(data_validade.getDate() + parseInt(fator_validade))    
+
+    let valor_boleto = barcode.slice(37, 47)
+    response.send(
+        '<div>'+fator_validade+'</div>'+
+        '<div>'+data_fim.toLocaleString().substring(0,data_fim.toLocaleString().indexOf(' '))+'</div>'+
+        '<div>'+valor_boleto+'</div>'
+    )
+    //return response.json(db)
 })
 
 routes.post('/add', (request, response) => {
